@@ -1,0 +1,2 @@
+python macgen.py
+You probably want to pass -v the first time you run it.
