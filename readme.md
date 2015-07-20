@@ -2,6 +2,7 @@ TODO
 ----
  - Extensive Pydoc documentation.
  - Clean up readme.
+ - Document `$HOME/var/oui`.
  - Remove old code.
 
 This project provides a skeleton for a pure Python project to be
