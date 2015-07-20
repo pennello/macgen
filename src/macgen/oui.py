@@ -99,9 +99,7 @@ class OuiMgr(object):
     cache = []
     for line in file:
       try: name,ouis = line.split('\t')
-      except ValueError:
-        print 'line %r' % line
-        raise
+      except ValueError: raise
       ouis = ouis.strip().split(' ')
       ouis = [cls.parseoui(oui) for oui in ouis]
       cache.append((name,ouis))
