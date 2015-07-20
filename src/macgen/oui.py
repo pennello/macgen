@@ -10,7 +10,7 @@ from collections import defaultdict
 from contextlib import closing
 from urllib2 import urlopen
 
-from .util import makedirs
+from . import util
 
 class OuiMgr(object):
   filename = 'oui'
@@ -46,6 +46,7 @@ class OuiMgr(object):
     if self.cache is None:
       self.cache = self.load()
       if self.cache is None:
+        util.log('fetching oui data from the ieee')
         self.cache = self.fetch()
         self.save(self.cache)
 
@@ -60,15 +61,18 @@ class OuiMgr(object):
         st = os.fstat(f.fileno())
         if st.st_mtime + self.thresh < time.time():
           os.unlink(self.path())
+          util.log('found oui cache, but it is expired')
           return None
         return self.parse(f)
     except IOError,e:
-      if e.errno == errno.ENOENT: return None
+      if e.errno == errno.ENOENT:
+        util.log('no local oui cache')
+        return None
       raise
 
   def save(self,cache):
     '''Save in-memory cache data structure to on-disk cache file.'''
-    makedirs(self.varpath,exist_ok=True)
+    util.makedirs(self.varpath,exist_ok=True)
     with open(self.path(), 'wb') as f:
       self.serialize(f,cache)
 
