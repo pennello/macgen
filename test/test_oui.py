@@ -20,7 +20,9 @@ shortthresh = 1
 # and the OUI data file is over three megabytes.  It thus usually isn't
 # that helpful to do network-related tests.  Maybe good to enable
 # manually and test out once and a while.
-donetwork = False
+testnet = False
+def netskip():
+  return unittest.skipUnless(testnet,'requires network tests enabled')
 
 @contextmanager
 def testctx():
@@ -150,8 +152,8 @@ class ClassTest(unittest.TestCase):
         x = OuiMgr.parse(io)
         self.assertEquals(x,cache)
 
+  @netskip()
   def test_fetch_network(self):
-    if not donetwork: return
     smokecache(self,OuiMgr.fetch())
 
 class InstanceTest(unittest.TestCase):
@@ -189,8 +191,8 @@ class InstanceTest(unittest.TestCase):
       ouimgr.ensure()
       smokecache(self,ouimgr.cache)
 
+  @netskip()
   def test_ensure_network(self):
-    if not donetwork: return
     with testctx() as tmpdir:
       ouimgr = OuiMgr(tmpdir)
       ouimgr.ensure()
@@ -202,3 +204,16 @@ class InstanceTest(unittest.TestCase):
       cache = Random.cache()
       ouimgr.save(cache)
       smokechoice(self,ouimgr.choose())
+
+  @netskip()
+  def test_choose_network(self):
+    with testctx() as tmpdir:
+      ouimgr = OuiMgr(tmpdir)
+      # This will kick off a network fetch.
+      smokechoice(self,ouimgr.choose())
+      smokecache(self,ouimgr.cache)
+      # Make sure we can load back the parsed result of the network
+      # fetch from disk.
+      ouimgr = OuiMgr(tmpdir)
+      smokechoice(self,ouimgr.choose())
+      smokecache(self,ouimgr.cache)

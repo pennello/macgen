@@ -123,6 +123,7 @@ class OuiMgr(object):
         if cls.token not in line: continue
         line = line.split(None,2)
         oui,name = line[0],line[2]
+        name = name.strip()
         if name == 'PRIVATE': continue
         oui = cls.parseoui(oui)
         # It would be nice to better normalize the organization names.
