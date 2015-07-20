@@ -18,8 +18,14 @@ Usage
    it will give you a "Hello, world." message.  The entry point is
    `src/__main__.py`.
 
+`make test` will run [`unittest discover`][1] on the `test` directory,
+finding any unit tests there whose names match `test*.py` (the default
+for `unittest discover`) and running them.  `src` is automatically added
+to the import path for any tests.  Note that test code is _not_
+incorporated into the self-contained executable.
+
 To install globally, run `make install` as the superuser.  The
-`Makefile` supports [`DESTDIR`][1].  The default destination for your
+`Makefile` supports [`DESTDIR`][2].  The default destination for your
 executable is `/usr/local/bin`.
 
 `make uninstall` will uninstall.
@@ -38,9 +44,9 @@ want to use `gmake` on FreeBSD.
 Details
 -------
 This approach uses the zipfile support of the [Python command-line
-interpreter][2].
+interpreter][3].
 
-Quoting the [`zipimport` module documentation][3]:
+Quoting the [`zipimport` module documentation][4]:
 > Any files may be present in the ZIP archive, but only files `.py` and
 > `.py[co]` are available for import. ZIP import of dynamic modules
 > (`.pyd`, `.so`) is disallowed. Note that if an archive only contains
@@ -51,6 +57,7 @@ Quoting the [`zipimport` module documentation][3]:
 This approach compiles with `-OO` and includes only the bytecode files
 in the ZIP archive.
 
-[1]: https://www.gnu.org/prep/standards/html_node/DESTDIR.html#DESTDIR
-[2]: https://docs.python.org/3/using/cmdline.html
-[3]: https://docs.python.org/3/library/zipimport.html
+[1]: https://docs.python.org/3/library/unittest.html#test-discovery
+[2]: https://www.gnu.org/prep/standards/html_node/DESTDIR.html#DESTDIR
+[3]: https://docs.python.org/3/using/cmdline.html
+[4]: https://docs.python.org/3/library/zipimport.html

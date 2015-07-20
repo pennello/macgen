@@ -4,8 +4,12 @@
 import errno
 import os
 import random
+import time
+
 from collections import defaultdict
 from contextlib import closing
+from urllib2 import urlopen
+
 from .util import makedirs
 
 class OuiMgr(object):
@@ -21,10 +25,13 @@ class OuiMgr(object):
     self.varpath = varpath
     self.cache = None
 
-  def path(self): return os.path.join(self.varpath,filename)
+  def path(self): return os.path.join(self.varpath,self.filename)
 
   def choose(self):
-    '''Return a randomly-chosen OUI.'''
+    '''
+    Return a (name,oui) tuple, where name is the name of the
+    randomly-chosen manufacturer, and oui is the randomly-chosen OUI.
+    '''
     self.ensure()
 
     # Choose random index to fetch a manufacturer and its OUIs.  Favor
@@ -32,7 +39,7 @@ class OuiMgr(object):
     # are.
     i = min(len(self.cache),int(round(abs(random.gauss(0,10)))))
     name,ouis = self.cache[i]
-    return choice(ouis)
+    return name,random.choice(ouis)
 
   def ensure(self):
     '''Ensure in-memory cache is available.'''
@@ -51,11 +58,11 @@ class OuiMgr(object):
     try:
       with open(self.path(), 'rb') as f:
         st = os.fstat(f.fileno())
-        if st.m_time > time.time() + self.thresh:
+        if st.st_mtime + self.thresh < time.time():
           os.unlink(self.path())
           return None
         return self.parse(f)
-    except OSError,e:
+    except IOError,e:
       if e.errno == errno.ENOENT: return None
       raise
 
@@ -87,7 +94,10 @@ class OuiMgr(object):
     '''Parse cache data from open file.'''
     cache = []
     for line in file:
-      name,ouis = line.split('\t')
+      try: name,ouis = line.split('\t')
+      except ValueError:
+        print 'line %r' % line
+        raise
       ouis = ouis.strip().split(' ')
       ouis = [cls.parseoui(oui) for oui in ouis]
       cache.append((name,ouis))
