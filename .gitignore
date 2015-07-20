@@ -1,2 +1,3 @@
+*.py[co]
 /macgen
 /macgen.zip
