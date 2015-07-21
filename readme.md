@@ -38,4 +38,5 @@ In addition, most of the classes and methods have Pydoc documentation.
 
 Files
 -----
+ - `/usr/local/bin/macgen` (via `make install`)
  - `$HOME/var/oui` (created at runtime)
