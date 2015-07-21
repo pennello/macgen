@@ -1,5 +1,6 @@
-# chris 071615 Code for dealing with organizationally-unique
-# identifiers.
+# chris 071615
+
+'''Code for dealing with organizationally-unique identifiers.'''
 
 import errno
 import os
@@ -13,10 +14,26 @@ from urllib2 import urlopen
 from . import util
 
 class OuiMgr(object):
+  '''
+  Code for dealing with organizationally-unique identifiers.
+
+  The high-level interface is just to instantiate one with a directory
+  in which cache files can be stored, and then to call choose.  If a
+  cache file is found, if it's not too old, it will be used.  Otherwise,
+  a listing of OUIs will be fetched from the IEEE and cached on disk.
+  In either case, a cache will be loaded into memory as the instance
+  attribute cache, and choose will randdomly choose a manufacturer and
+  an OUI registered to it.
+  '''
+
   filename = 'oui'
+
+  # URL from which to fetch OUI data from the IEEE.
   ieee = 'http://standards.ieee.org/regauth/oui/%s.txt' % filename
+
   # Token to identify lines with OUI and company name.
   token = '(hex)'
+
   # Threshold after which to consider a cached copy of the IEEE data
   # stale, requiring a re-fetch.
   thresh = 6 * 30 * 24 * 60 * 60
@@ -25,7 +42,9 @@ class OuiMgr(object):
     self.varpath = varpath
     self.cache = None
 
-  def path(self): return os.path.join(self.varpath,self.filename)
+  def path(self):
+    '''Return path to local cache file.'''
+    return os.path.join(self.varpath,self.filename)
 
   def choose(self):
     '''

@@ -1,63 +1,41 @@
-TODO
-----
- - Extensive Pydoc documentation.
- - Clean up readme.
- - Document `$HOME/var/oui`.
-
-This project provides a skeleton for a pure Python project to be
-distributed as a single, self-contained executable on Unix-like systems.
-
-Usage
------
-1. Include the contents of this project into your new workspace.
-2. Set the value of the `name` variable in the `Makefile`, as well as
-   the contents of `.gitignore`, if applicable, to the desired name of
-   your project or executable.  The default is `helloworld`.
-3. Run `make`.  You will now have an executable of that name (as well as
-   a ZIP; see the Details section) in your working directory.  Running
-   it will give you a "Hello, world." message.  The entry point is
-   `src/__main__.py`.
-
-`make test` will run [`unittest discover`][1] on the `test` directory,
-finding any unit tests there whose names match `test*.py` (the default
-for `unittest discover`) and running them.  `src` is automatically added
-to the import path for any tests.  Note that test code is _not_
-incorporated into the self-contained executable.
-
-To install globally, run `make install` as the superuser.  The
-`Makefile` supports [`DESTDIR`][2].  The default destination for your
-executable is `/usr/local/bin`.
-
-`make uninstall` will uninstall.
-
-`make clean` will clean your working directory of the executable, the
-ZIP, and any `.pyo` compiled Python files in `src`.
-
-`src/header` is the header for the self-contained executable; it merely
-specifies a shebang for the Python interpreter.
-
-Portability
+Description
 -----------
-The `Makefile` takes advantage of GNU extensions; therefore, you will
-want to use `gmake` on FreeBSD.
+`macgen` generates a random and correctly-formatted MAC address. The
+last three octets are always random.  You may choose whether or not you
+want to use an organizationally unique identifier (OUI); by default, one
+is used..  If not using an OUI, you may choose whether or not your MAC
+address has its locally administered bit set, by default, it won't.
+Default output is a sequence of two-digit hex values for each octet,
+separated by `:` characters.  You may choose to omit the `:` characters,
+or, if you like, output the MAC address as raw bytes.  Finally, there is
+an option to output verbose debug information to standard error.
 
-Details
--------
-This approach uses the zipfile support of the [Python command-line
-interpreter][3].
+In order to choose real OUIs, `macgen` will fetch an official listing
+from the IEEE.  The listing will be cached locally (see the Files
+section), and if it becomes too old, it will be re-fetched.
 
-Quoting the [`zipimport` module documentation][4]:
-> Any files may be present in the ZIP archive, but only files `.py` and
-> `.py[co]` are available for import. ZIP import of dynamic modules
-> (`.pyd`, `.so`) is disallowed. Note that if an archive only contains
-> `.py` files, Python will not attempt to modify the archive by adding
-> the corresponding `.pyc` or `.pyo` file, meaning that if a ZIP archive
-> doesn't contain `.pyc` files, importing may be rather slow.
+Build & Installation
+--------------------
+Simply run `make && sudo make install`.  The `Makefile` takes advantage
+of GNU extensions; therefore, you will want to use `gmake` on FreeBSD.
+The `Makefile` supports `DESTDIR`.
 
-This approach compiles with `-OO` and includes only the bytecode files
-in the ZIP archive.
+`make test` will run tests in the `test` directory, finding any unit
+tests there whose names match `test*.py` (the default for `unittest
+discover`) and running them.  `src` is automatically added to the import
+path for any tests.  Note that test code is _not_ incorporated into
+`macgen`.
 
-[1]: https://docs.python.org/3/library/unittest.html#test-discovery
-[2]: https://www.gnu.org/prep/standards/html_node/DESTDIR.html#DESTDIR
-[3]: https://docs.python.org/3/using/cmdline.html
-[4]: https://docs.python.org/3/library/zipimport.html
+`make uninstall` will uninstall.  Note that the local OUI cache file
+(see the Files section) will not be uninstalled automatically for you.
+
+Documentation
+-------------
+`macgen` has a healthy amount of command-line help.  Run `macgen -h` to
+get started.
+
+In addition, most of the classes and methods have Pydoc documentation.
+
+Files
+-----
+ - `$HOME/var/oui` (created at runtime)

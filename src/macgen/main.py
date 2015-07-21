@@ -1,4 +1,6 @@
-# chris 071615 Main code.
+# chris 071615
+
+'''Main application logic.'''
 
 import os
 import struct
@@ -10,7 +12,13 @@ from . import util
 from .oui import OuiMgr
 
 class Main(object):
+  '''Class encapsulating main application logic.'''
+
   def __init__(self,prog,*argv):
+    '''
+    Pass the main program name (argv[0]) and the rest of the
+    command-line arguments.
+    '''
     self.prog = os.path.basename(prog)
     descr = ('Generates a random and correctly-formatted MAC address. '
       'The last three octets are always random.')
@@ -30,11 +38,15 @@ class Main(object):
 
     util.enablelog = self.args.verbose
 
-  def basepath(self): return os.path.expanduser('~')
+  def basepath(self):
+    '''Base path for on-disk cached data.'''
+    return os.path.expanduser('~')
   def varpath(self):
+    '''Path to var dir for locally-cached data.'''
     return os.path.join(self.basepath(),'var',self.prog)
 
   def run(self):
+    '''Run main application logic.'''
     if self.args.use_oui:
       name,oui = OuiMgr(self.varpath()).choose()
       util.log('chose an oui from %s' % name)
