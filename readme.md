@@ -41,4 +41,6 @@ Files
  - `/usr/local/bin/macgen` (via `make install`)
  - `$HOME/var/cache/macgen/oui` (created at runtime)
 
-The OUI cache will be stored in the XDG cache home if available.
+XDG Compatibility
+-----------------
+The OUI cache will be stored in the XDG cache home instead if available.
