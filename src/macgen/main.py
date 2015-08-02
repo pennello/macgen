@@ -8,6 +8,8 @@ import sys
 
 from argparse import ArgumentParser
 
+from userdirs import UserDirs
+
 from . import util
 from .oui import OuiMgr
 
@@ -38,12 +40,11 @@ class Main(object):
 
     util.enablelog = self.args.verbose
 
-  def basepath(self):
-    '''Base path for on-disk cached data.'''
-    return os.path.expanduser('~')
+    self.userdirs = UserDirs()
+
   def varpath(self):
     '''Path to var dir for locally-cached data.'''
-    return os.path.join(self.basepath(),'var',self.prog)
+    return self.userdirs.dir('var','cache',self.prog)
 
   def run(self):
     '''Run main application logic.'''

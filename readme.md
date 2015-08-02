@@ -39,4 +39,6 @@ In addition, most of the classes and methods have Pydoc documentation.
 Files
 -----
  - `/usr/local/bin/macgen` (via `make install`)
- - `$HOME/var/oui` (created at runtime)
+ - `$HOME/var/cache/macgen/oui` (created at runtime)
+
+The OUI cache will be stored in the XDG cache home if available.
